@@ -5,6 +5,7 @@ services:
     environment:
       - MODEL_DIR=/models
       - BUILD_VERSION=xxxxxxx
+      - HF_REPO=xxxxxxx
     volumes:
       - ./main.py:/app/main.py
       - ./models:/models
