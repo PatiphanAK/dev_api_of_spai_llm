@@ -55,7 +55,7 @@ def read_root():
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": f"ok with {DEVICE}"}
 
 
 @app.post("/infer", response_model=InferResponse)
