@@ -3,9 +3,10 @@ from functools import lru_cache
 
 import regex
 import torch
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from pydantic import BaseModel, Field
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
 
 app = FastAPI(title="SuperAI Demo")
 
@@ -47,18 +48,19 @@ class InferResponse(BaseModel):
     prompt_tokens: int
     completion_tokens: int
 
+router = APIRouter(prefix="/api")
 
-@app.get("/")
+@router.get("/")
 def read_root():
     return {"message": "Hello from SuperAI FastAPI demo"}
 
 
-@app.get("/health")
+@router.get("/health")
 def health():
     return {"status": f"ok with {DEVICE}"}
 
 
-@app.post("/infer", response_model=InferResponse)
+@router.post("/infer", response_model=InferResponse)
 def infer(req: InferRequest):
     try:
         tokenizer, model = load_model()
