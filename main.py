@@ -115,7 +115,7 @@ def read_root():
     responses={200: {"content": {"application/json": {"example": {"status": "ok with cuda"}}}}},
 )
 def health():
-    return {"status": f"ok with {DEVICE}"}
+    return {"status": f"ok with {DEVICE}, model=${MODEL_DIR}"}
 
 
 @router.post(
