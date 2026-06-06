@@ -1,6 +1,7 @@
 import os
 from functools import lru_cache
 
+import regex
 import torch
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -11,11 +12,14 @@ app = FastAPI(title="SuperAI Demo")
 MODEL_DIR = os.environ.get("MODEL_DIR", "/content/model")
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
+# Pattern สำหรับลบ special token ที่หลุดมาในรูปแบบ <|extra_NNNN|>
+# ปรับเป็น r"<\|[^|>]*\|>" ถ้าต้องการลบ <|...|> ทุกแบบ
+EXTRA_TOKEN_RE = regex.compile(r"<\|extra_\d+\|>")
+
 
 @lru_cache(maxsize=1)
 def load_model():
     """Load tokenizer + model from safetensors weights in MODEL_DIR (cached)."""
-
     tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR)
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_DIR,
@@ -77,6 +81,9 @@ def infer(req: InferRequest):
     # Strip the prompt tokens so we only decode the newly generated text.
     new_tokens = generated[0][prompt_tokens:]
     output = tokenizer.decode(new_tokens, skip_special_tokens=True)
+
+    # ลบ special token ที่ skip_special_tokens ลบไม่ออก (เช่น <|extra_2919|>)
+    output = EXTRA_TOKEN_RE.sub("", output).strip()
 
     return InferResponse(
         output=output,
