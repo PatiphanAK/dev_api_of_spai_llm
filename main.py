@@ -93,7 +93,7 @@ def infer(req: InferRequest):
         completion_tokens=int(new_tokens.shape[-1]),
     )
 
-
+app.include_router(router)
 if __name__ == "__main__":
     import uvicorn
 
