@@ -29,7 +29,7 @@ RUN uv pip install --index-url ${TORCH_INDEX_URL} torch
 COPY requirements.txt /tmp/requirements.txt
 RUN uv pip install -r /tmp/requirements.txt
 
-FROM ubuntu:24.04
+FROM spaiss6:8
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
