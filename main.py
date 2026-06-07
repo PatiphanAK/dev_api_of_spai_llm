@@ -119,7 +119,7 @@ def health():
 
 
 @router.post(
-    "/chat",
+    "/superai",
     response_model=InferResponse,
     summary="Run LLM inference",
     description=(
