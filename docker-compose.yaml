@@ -9,6 +9,8 @@ services:
     volumes:
       - ./main.py:/app/main.py
       - ./models:/models
+    networks:
+      - spaiss6
     ports:
       - "8000:8000"
     deploy:
@@ -18,3 +20,7 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+
+networks:
+  spaiss6:
+    driver: bridge
